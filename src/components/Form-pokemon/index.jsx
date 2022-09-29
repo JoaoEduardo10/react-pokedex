@@ -7,14 +7,12 @@ import Buttons from "../Buttons"
 import Pokemon from "../pokemon"
 
 
-const numero = 1;
-
 const Form = () => {
     const [pokemonValue, setPokemonValue] = useState()
     const [pokemon, setPokemon] = useState([])
     const [pokemonImg, setPokemonImg] = useState()
-    const [pokemonCounter, setPokemonCounter] = useState(numero + 1)
-    const [pokemonCounterPrev, setPokemonCounterPrev] = useState(numero - 1)
+    const [pokemonCounter, setPokemonCounter] = useState(2)
+    const [pokemonCounterPrev, setPokemonCounterPrev] = useState(0)
     const [pokemonImgPrev, setPokemonImgPrev] = useState()
     const [state, setState] = useState(false)
 
@@ -40,7 +38,7 @@ const Form = () => {
     }
 
     const handleClickNext = async () => {
-        
+
         setPokemonCounter( Number(pokemonCounter) + 1)
         setPokemonCounterPrev(pokemonCounter - 1)
 
