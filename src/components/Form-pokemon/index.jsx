@@ -40,9 +40,10 @@ const Form = () => {
     }
 
     const handleClickNext = async () => {
+        
         setPokemonCounter( Number(pokemonCounter) + 1)
         setPokemonCounterPrev(pokemonCounter - 1)
-        console.log(pokemonCounter)
+
         const Api = async () => {
             const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonCounter}`)
             const data = await resp.json()
@@ -59,9 +60,10 @@ const Form = () => {
     }
 
     const handleClickPrev = async () => {
+
         setPokemonCounterPrev(Number(pokemonCounterPrev  ) - 1)
         setPokemonCounter(pokemonCounterPrev + 1)
-        console.log(pokemonCounterPrev)
+
         const Api = async () => {
             const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonCounterPrev}`)
             const data = await resp.json()
