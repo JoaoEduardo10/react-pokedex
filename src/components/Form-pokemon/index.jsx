@@ -7,8 +7,6 @@ import Buttons from "../Buttons"
 import Pokemon from "../pokemon"
 
 
-
-let contador = 1
 const numero = 1;
 
 const Form = () => {
@@ -24,10 +22,6 @@ const Form = () => {
     const Api = async () => {
         const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonValue || 1}`)
         const data = await resp.json()
-
-        
-
-        contador = data.id
 
         return data
     }
@@ -52,7 +46,6 @@ const Form = () => {
         const Api = async () => {
             const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonCounter}`)
             const data = await resp.json()
-            contador = data.id
             return data
         }
 
@@ -72,7 +65,6 @@ const Form = () => {
         const Api = async () => {
             const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonCounterPrev}`)
             const data = await resp.json()
-            contador = data.id
             return data
         }
 
