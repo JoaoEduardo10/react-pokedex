@@ -1,10 +1,13 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 
 import "./styles.css"
 
 import PokemonData from "../pokemonData"
 import Buttons from "../Buttons"
 import Pokemon from "../pokemon"
+import Api from "../../Api"
+import condicionalSubmit from "../functions/condicionais"
+import { condicionalClick } from "../functions/condicionais"
 
 
 const Form = () => {
@@ -15,18 +18,16 @@ const Form = () => {
     const [pokemonCounterPrev, setPokemonCounterPrev] = useState(0)
     const [pokemonImgPrev, setPokemonImgPrev] = useState()
     const [state, setState] = useState(false)
+    const inputRef = useRef()
 
 
-    const Api = async () => {
-        const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonValue || 1}`)
-        const data = await resp.json()
-
-        return data
-    }
+    
     
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const pokemonApi = await Api()
+        condicionalSubmit(pokemonValue, inputRef, setPokemonValue)
+        
+        const pokemonApi = await Api(pokemonValue)
         setPokemon(pokemonApi)
         setState(true)
         setPokemonCounter(Number(pokemonApi.id) + 1 )
@@ -38,17 +39,13 @@ const Form = () => {
     }
 
     const handleClickNext = async () => {
+        const condicao = pokemonCounter > 898
+        condicionalClick(condicao,inputRef)
 
         setPokemonCounter( Number(pokemonCounter) + 1)
         setPokemonCounterPrev(pokemonCounter - 1)
 
-        const Api = async () => {
-            const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonCounter}`)
-            const data = await resp.json()
-            return data
-        }
-
-        const pokemonApi = await Api()
+        const pokemonApi = await Api(pokemonCounter)
         setPokemon(pokemonApi)
         setState(true)
         setPokemonImgPrev(pokemonApi.sprites["front_default"])
@@ -58,17 +55,13 @@ const Form = () => {
     }
 
     const handleClickPrev = async () => {
+        const condicao = pokemonCounterPrev < 1
+        condicionalClick(condicao, inputRef)
 
         setPokemonCounterPrev(Number(pokemonCounterPrev  ) - 1)
         setPokemonCounter(pokemonCounterPrev + 1)
 
-        const Api = async () => {
-            const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonCounterPrev}`)
-            const data = await resp.json()
-            return data
-        }
-
-        const pokemonApi = await Api()
+        const pokemonApi = await Api(pokemonCounterPrev)
         setPokemon(pokemonApi)
         setState(true)
         setPokemonImgPrev(pokemonApi.sprites["front_default"])
@@ -91,6 +84,7 @@ const Form = () => {
                     onChange={({target}) => {
                         setPokemonValue(target.value)
                     }}
+                    ref={inputRef}
                 />
             </form>
             <PokemonData number={pokemon.id} name={pokemon.name} state={state} />

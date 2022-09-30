@@ -1,20 +1,17 @@
 import { useEffect, useState } from "react"
 import "./styles.css"
 
+import Api from "../../Api"
 
 
 const PokemonData =  ({ number, name, state }) => {
         const [pokemon, setPokemon] = useState([])
-    
-        const Api = async () => {
-            const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/1`)
-            const data = await resp.json()
-    
-            setPokemon(data)
-        }
+
+        
 
         useEffect(() => {
-            Api()
+           Api()
+           .then(data => setPokemon(data))
         },[])
         
 
