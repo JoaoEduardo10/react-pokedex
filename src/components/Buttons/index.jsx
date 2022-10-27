@@ -2,7 +2,6 @@ import { useMyRook } from "../../contexts"
 import "./styles.css"
 
 import * as types from "../../contexts/types"
-import { useState } from "react"
 
 
 const Buttons = () => {
