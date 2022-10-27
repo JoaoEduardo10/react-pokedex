@@ -1,94 +1,64 @@
-import { useRef, useState } from "react"
-
 import "./styles.css"
 
 import PokemonData from "../pokemonData"
 import Buttons from "../Buttons"
 import Pokemon from "../pokemon"
-import Api from "../../Api"
-import condicionalSubmit from "../functions/condicionais"
-import { condicionalClick } from "../functions/condicionais"
+import { useEffect, useState } from "react"
+import { useMyRook } from '../../contexts'
 
+import * as types from "../../contexts/types"
 
 const Form = () => {
-    const [pokemonValue, setPokemonValue] = useState()
-    const [pokemon, setPokemon] = useState([])
-    const [pokemonImg, setPokemonImg] = useState()
-    const [pokemonCounter, setPokemonCounter] = useState(2)
-    const [pokemonCounterPrev, setPokemonCounterPrev] = useState(0)
-    const [pokemonImgPrev, setPokemonImgPrev] = useState()
-    const [state, setState] = useState(false)
-    const inputRef = useRef()
+    const [value, setValue] = useState("")
+    const [pokemonData, setPokemonData] = useState([])
 
+    const { state ,dispatch } = useMyRook()
 
+    useEffect(() => {
+        const ApiPokemon = async () => {
+            const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${ state.pokemonId || 1}`)
+            if(resp.status === 404){
+                alert('Pokemon não encontrado')
+                dispatch({ type: types.POKEMON_ID, payload: 1 })
+            }
+            const data = await resp.json()
     
-    
-    const handleSubmit = async (e) => {
+            setPokemonData(data)
+        }
+
+        ApiPokemon()
+    }, [dispatch, state.pokemonId])
+
+    useEffect(() => {
+        dispatch({ type: types.POKEMON_NAME, payload: pokemonData.name })
+        dispatch({ type: types.POKEMON_ID, payload: pokemonData.id })
+    }, [dispatch, pokemonData.id, pokemonData.name])
+
+    const handleSubmit = (e) => {
         e.preventDefault()
-        condicionalSubmit(pokemonValue, inputRef, setPokemonValue)
-        
-        const pokemonApi = await Api(pokemonValue)
-        setPokemon(pokemonApi)
-        setState(true)
-        setPokemonCounter(Number(pokemonApi.id) + 1 )
-        setPokemonCounterPrev(Number(pokemonApi.id) - 1 )
-        setPokemonImgPrev(pokemonApi.sprites["front_default"])
-        setPokemonImg(pokemonApi["sprites"]["versions"]["generation-v"]["black-white"]["animated"]["front_default"])
-        setPokemonValue('')
-        
-    }
 
-    const handleClickNext = async () => {
-        const condicao = pokemonCounter > 898
-        condicionalClick(condicao,inputRef)
+        dispatch({ type: types.POKEMON_ID, payload: value })
 
-        setPokemonCounter( Number(pokemonCounter) + 1)
-        setPokemonCounterPrev(pokemonCounter - 1)
-
-        const pokemonApi = await Api(pokemonCounter)
-        setPokemon(pokemonApi)
-        setState(true)
-        setPokemonImgPrev(pokemonApi.sprites["front_default"])
-        setPokemonImg(pokemonApi["sprites"]["versions"]["generation-v"]["black-white"]["animated"]["front_default"])
-        setPokemonValue('')
+        setValue('')
 
     }
 
-    const handleClickPrev = async () => {
-        const condicao = pokemonCounterPrev < 1
-        condicionalClick(condicao, inputRef)
-
-        setPokemonCounterPrev(Number(pokemonCounterPrev  ) - 1)
-        setPokemonCounter(pokemonCounterPrev + 1)
-
-        const pokemonApi = await Api(pokemonCounterPrev)
-        setPokemon(pokemonApi)
-        setState(true)
-        setPokemonImgPrev(pokemonApi.sprites["front_default"])
-        setPokemonImg(pokemonApi["sprites"]["versions"]["generation-v"]["black-white"]["animated"]["front_default"])
-        setPokemonValue('')
-
-    }
-    
     return (
         
         <>
-            <Pokemon state={state} img={pokemonImg} name={pokemon.name} imgAlt={pokemonImgPrev} />
-            <form onSubmit={handleSubmit} className="form">
+            <Pokemon />
+            <form className="form" onSubmit={ handleSubmit}>
                 <input
                     type="search"
                     className="input_search"
                     placeholder="Search"
                     required
-                    value={pokemonValue}
-                    onChange={({target}) => {
-                        setPokemonValue(target.value)
-                    }}
-                    ref={inputRef}
+                    value={value}
+                    onChange={({ target }) => setValue(target.value)}
                 />
             </form>
-            <PokemonData number={pokemon.id} name={pokemon.name} state={state} />
-            <Buttons handleClickNext={handleClickNext} handleClickPrev={handleClickPrev} />
+            <PokemonData number={pokemonData.id} name={pokemonData.name} />
+            <Buttons />
         </>
     )
 }

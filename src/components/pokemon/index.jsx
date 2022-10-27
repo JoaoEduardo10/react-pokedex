@@ -1,18 +1,20 @@
+import { useMyRook } from "../../contexts"
 import "./styles.css"
 
+const srcImgGif = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/"
 
-const Pokemon = ({ img, state, name, imgAlt }) => {
-    
-    const pokemonImg = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/versions/generation-v/black-white/animated/1.gif"
+const srcImgPng = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/"
+
+const Pokemon = () => {
+    const { state } = useMyRook()
+
 
     return (
         <>
-            {!state && (
-                <img className="pokemon_image" src={pokemonImg} alt={name} />
-            )}
-            {img == null && state ? (<img className="pokemon_image" src={imgAlt} alt={name} />) : (
-                <img className="pokemon_image" src={img} alt={name} />
-            )}
+           {state.pokemonId < 650 && <img className="pokemon_image" src={`${srcImgGif}${state.pokemonId}.gif`} alt={state.pokemonName} />}
+           {state.pokemonId > 649 && 
+            <img className="pokemon_image" src={`${srcImgPng}${state.pokemonId}.png`} alt={state.pokemonName}/>
+           }
         </>
     )
 }
