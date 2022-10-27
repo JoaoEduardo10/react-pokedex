@@ -16,20 +16,26 @@ const Form = () => {
 
     useEffect(() => {
         const ApiPokemon = async () => {
+            dispatch({ type: types.LOADING, payload: true })
+
             const resp = await fetch(`https://pokeapi.co/api/v2/pokemon/${ state.pokemonId || 1}`)
             if(resp.status === 404){
+                dispatch({ type: types.LOADING, payload: false })
+
                 alert('Pokemon não encontrado')
                 dispatch({ type: types.POKEMON_ID, payload: 1 })
             }
             const data = await resp.json()
     
             setPokemonData(data)
+            dispatch({ type: types.LOADING, payload: false })
         }
 
         ApiPokemon()
     }, [dispatch, state.pokemonId])
 
     useEffect(() => {
+        
         dispatch({ type: types.POKEMON_NAME, payload: pokemonData.name })
         dispatch({ type: types.POKEMON_ID, payload: pokemonData.id })
     }, [dispatch, pokemonData.id, pokemonData.name])

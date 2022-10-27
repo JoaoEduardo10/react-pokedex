@@ -14,6 +14,9 @@ export const reducer = (state, actions) => {
         case types.POKEMON_NAME:{
             return {...state, pokemonName: actions.payload}
         }
+        case types.LOADING:{
+            return {...state, loading: actions.payload}
+        }
     
         default:
     }
